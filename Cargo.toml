@@ -1,0 +1,36 @@
+[package]
+name = "MewAuto"
+version = "0.0.1"
+edition = "2021"
+authors = ["MewTheDev"]
+build = "build.rs"
+
+[[bin]]
+name = "MewAuto"
+path = "src/main.rs"
+
+[target.'cfg(windows)'.build-dependencies]
+winres = "0.1.12"
+
+[dependencies]
+anyhow = "1.0.89"
+open = "5.3.0"
+reqwest = { version = "0.12.8", features = ["blocking", "json"] }
+serde = { version = "1.0.210", features = ["derive"] }
+serde_json = "1.0.128"
+trayicon = { version = "0.2.0", default-features = false }
+winreg = "0.52.0"
+
+[dependencies.windows]
+version = "0.58.0"
+features = [
+  "Win32_System_ProcessStatus",
+  "Win32_System_Services",
+  "Win32_System_Threading",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_System_Power",
+  "Win32_System_Registry",
+]
+
+[profile.release]
+lto = true
