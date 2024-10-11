@@ -22,9 +22,6 @@ pub fn thread(receiver: std::sync::mpsc::Receiver<Events>, mut tray_icon: TrayIc
       let _ = bun::toggle_auto_update().unwrap();
       let _ = setup_tray_icon(&mut tray_icon);
     }
-    Events::Monitor => {
-      let _ = setup_tray_icon(&mut tray_icon);
-    }
     Events::TurnOffMonitor => {
       let _ = monitor::turn_off_monitor();
       let _ = setup_tray_icon(&mut tray_icon);
