@@ -6,6 +6,7 @@ use windows::Win32::{
     ProcessStatus::{EnumProcessModulesEx, EnumProcesses, GetModuleBaseNameW, LIST_MODULES_ALL},
     Threading::{OpenProcess, PROCESS_QUERY_INFORMATION, PROCESS_VM_READ},
   },
+  UI::WindowsAndMessaging::{GetForegroundWindow, GetWindowTextW, GetWindowThreadProcessId},
 };
 
 pub fn get_processes_exec_name() -> Result<Vec<String>> {
@@ -72,4 +73,17 @@ pub fn get_processes_by_name(name: &str) -> Result<Vec<String>> {
       .filter(|p_name| !p_name.is_empty())
       .collect(),
   )
+}
+
+pub fn get_active_window() -> Result<(u32, String)> {
+  unsafe {
+    let hwnd = GetForegroundWindow();
+    let mut pid: u32 = 0;
+    GetWindowThreadProcessId(hwnd, Some(&mut pid));
+    let mut bytes: [u16; 500] = [0; 500];
+    let len = GetWindowTextW(hwnd, &mut bytes);
+    let title = String::from_utf16_lossy(&bytes[..len as usize]);
+
+    Ok((pid, title))
+  }
 }

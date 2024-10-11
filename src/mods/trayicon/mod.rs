@@ -10,9 +10,11 @@ pub enum Events {
   LeftClickTrayIcon,
 
   DisableLabelBun,
-  CurrentVersion,
+  AboutVersion,
   AutoUpdate,
-  OpenReleaseNotes,
+
+  Monitor,
+  TurnOffMonitor,
 
   AutoDetectGameMode,
 
@@ -44,14 +46,21 @@ pub fn setup_tray_icon(tray_icon: &mut trayicon::TrayIcon<Events>) -> Result<()>
         })
         .item(
           format!("About bun v{}", bun::get_current_version().unwrap()).as_str(),
-          Events::CurrentVersion,
+          Events::AboutVersion,
         )
         .checkable(
           "Always up to date",
           bun::get_auto_update().unwrap(),
           Events::AutoUpdate,
         )
-        .item("Open release notes", Events::OpenReleaseNotes)
+        .separator()
+        .with(MenuItem::Item {
+          id: Events::DisableLabelBun,
+          name: "Monitor".into(),
+          disabled: true,
+          icon: None,
+        })
+        .item("Turn off monitor", Events::TurnOffMonitor)
         .separator()
         .checkable(
           "Auto-detect game mode",

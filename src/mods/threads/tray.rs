@@ -1,9 +1,8 @@
 use trayicon::TrayIcon;
 
 use crate::mods::{
-  bun, game,
+  bun, game, monitor,
   trayicon::{setup_tray_icon, Events},
-  utils::msgbox::info_msg_box,
 };
 
 pub fn thread(receiver: std::sync::mpsc::Receiver<Events>, mut tray_icon: TrayIcon<Events>) {
@@ -15,17 +14,19 @@ pub fn thread(receiver: std::sync::mpsc::Receiver<Events>, mut tray_icon: TrayIc
     Events::DisableLabelBun => {
       let _ = setup_tray_icon(&mut tray_icon);
     }
-    Events::CurrentVersion => {
-      let res = bun::fetch_latest_api().unwrap();
-      let _ = info_msg_box("Release description", &res.body);
+    Events::AboutVersion => {
+      let _ = bun::open_release_notes();
       let _ = setup_tray_icon(&mut tray_icon);
     }
     Events::AutoUpdate => {
       let _ = bun::toggle_auto_update().unwrap();
       let _ = setup_tray_icon(&mut tray_icon);
     }
-    Events::OpenReleaseNotes => {
-      let _ = bun::open_release_notes();
+    Events::Monitor => {
+      let _ = setup_tray_icon(&mut tray_icon);
+    }
+    Events::TurnOffMonitor => {
+      let _ = monitor::turn_off_monitor();
       let _ = setup_tray_icon(&mut tray_icon);
     }
     Events::AutoDetectGameMode => {
