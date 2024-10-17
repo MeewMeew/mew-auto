@@ -6,7 +6,7 @@ use super::utils::{
   store::{read_from_registry, write_to_registry},
 };
 use crate::mods::utils::constants::CREATE_NO_WINDOW;
-use anyhow::{Ok, Result};
+use anyhow::Result;
 use reqwest::header::USER_AGENT;
 use serde::Deserialize;
 

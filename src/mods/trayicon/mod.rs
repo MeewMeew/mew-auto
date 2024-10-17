@@ -3,11 +3,13 @@ use std::sync::mpsc::Sender;
 use anyhow::Result;
 use trayicon::{MenuBuilder, TrayIcon, TrayIconBuilder};
 
-use super::{bun, game, utils::constants::APP_VERSION};
+use super::{bun, game, utils::constants::APP_VERSION, voice};
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub enum Events {
   LeftClickTrayIcon,
+
+  ListenHeyPC,
 
   DisableLabelBun,
   AboutVersion,
@@ -37,6 +39,12 @@ pub fn setup_tray_icon(tray_icon: &mut trayicon::TrayIcon<Events>) -> Result<()>
   tray_icon
     .set_menu(
       &MenuBuilder::new()
+        .checkable(
+          "Listen Hey PC",
+          voice::get_listen_hey_pc().unwrap(),
+          Events::ListenHeyPC,
+        )
+        .separator()
         .submenu(
           "Bun runtime",
           MenuBuilder::new()
@@ -51,18 +59,12 @@ pub fn setup_tray_icon(tray_icon: &mut trayicon::TrayIcon<Events>) -> Result<()>
             ),
         )
         .separator()
-        .submenu(
-          "Monitor",
-          MenuBuilder::new().item("Turn off monitor", Events::TurnOffMonitor),
-        )
+        .item("Turn off monitor", Events::TurnOffMonitor)
         .separator()
-        .submenu(
-          "Game",
-          MenuBuilder::new().checkable(
-            "Auto-detect game mode",
-            game::get_auto_game_mode().unwrap(),
-            Events::AutoDetectGameMode,
-          ),
+        .checkable(
+          "Auto-detect game mode",
+          game::get_auto_game_mode().unwrap(),
+          Events::AutoDetectGameMode,
         )
         .separator()
         .item("Exit", Events::Exit),

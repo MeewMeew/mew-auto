@@ -3,14 +3,17 @@
 
 mod mods;
 
+use anyhow::Result;
 use mods::{
   process::get_processes_by_name,
-  threads::{bun, game, tray},
+  threads::{bun, game, tray, voice},
   trayicon::{init_tray_icon, Events},
-  utils::{constants::APP_VERSION, msgbox::error_msg_box},
+  utils::{
+    constants::{APP_VERSION, APP_VERSION_KEY},
+    msgbox::error_msg_box,
+    store::write_to_registry,
+  },
 };
-
-use anyhow::Result;
 use std::mem::MaybeUninit;
 use windows::Win32::{
   Foundation::TRUE,
@@ -33,12 +36,15 @@ fn main() -> Result<()> {
       }
     }
   }
+  println!("  + Exiting gracefully...");
 
   Ok(())
 }
 
 fn pre_init() -> Result<()> {
   println!("{}", format!("  + Running MewAuto v{}", APP_VERSION));
+
+  write_to_registry(APP_VERSION_KEY, APP_VERSION).unwrap();
 
   let processes = get_processes_by_name("MewAuto").unwrap();
   processes.iter().for_each(|p| {
@@ -72,6 +78,10 @@ fn init_events() -> Result<()> {
   let _ = std::thread::Builder::new()
     .name("Tray_Thread".to_string())
     .spawn(move || tray::thread(receiver, tray_icon.unwrap()));
+
+  let _ = std::thread::Builder::new()
+    .name("Voice_Thread".to_string())
+    .spawn(voice::thread);
 
   Ok(())
 }

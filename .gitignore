@@ -1,3 +1,10 @@
-/target
-/res/MewAutoSetup.exe
-build.bat
+target
+mew-auto.exe
+bin/ffplay.exe
+bin/voice.exe
+voice/build
+voice/dist
+voice/env
+voice/main.spec
+voice/voice.spec
+voice/__pycache__

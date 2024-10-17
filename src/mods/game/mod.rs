@@ -4,7 +4,7 @@ use super::utils::{
   constants::{AUTO_GAME_MODE, AUTO_PAUSE_PROCESS, CREATE_NO_WINDOW},
   store::{read_from_registry, write_to_registry},
 };
-use anyhow::{Ok, Result};
+use anyhow::Result;
 
 pub fn get_auto_game_mode() -> Result<bool> {
   let auto = read_from_registry(AUTO_GAME_MODE, "0").unwrap();
